@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_application/provider/cart_provider.dart';
+import 'package:shop_application/provider/orders_provider.dart';
 import 'package:shop_application/provider/product_provider.dart';
 import 'package:shop_application/routes/routes.dart';
 import 'package:shop_application/values/strings.dart';
@@ -31,6 +31,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           create: (ctx) => CartProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => OrdersProvider(),
         ),
       ],
       child: MaterialApp(

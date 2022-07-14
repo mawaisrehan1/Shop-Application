@@ -74,13 +74,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  get:
+  intl:
     dependency: "direct main"
     description:
-      name: get
+      name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.6.5"
+    version: "0.17.0"
   lints:
     dependency: transitive
     description:
