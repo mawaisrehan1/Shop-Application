@@ -42,8 +42,8 @@ class _MyAppState extends State<MyApp> {
         routes: Routes.getRoutes(),
         title: appName,
         theme: ThemeData(
-          primarySwatch: Colors.red,
-          accentColor: Colors.amber,
+          primarySwatch: Colors.purple,
+          accentColor: Colors.orange,
           // canvasColor: const Color.fromRGBO(255, 254, 229, 1),
           fontFamily: 'Lato',
           textTheme: ThemeData.light().textTheme.copyWith(
