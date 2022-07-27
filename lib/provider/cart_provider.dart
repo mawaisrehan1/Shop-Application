@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Model for CartItem!
 class CartItem {
   final String id;
   final String title;
@@ -11,7 +12,11 @@ class CartItem {
       required this.title,
       required this.quantity,
       required this.price});
-}
+
+} // CartItem class end here!
+
+
+
 
 class CartProvider with ChangeNotifier {
    Map<String, CartItem> _items = {};
@@ -82,4 +87,6 @@ class CartProvider with ChangeNotifier {
     _items = {};
     notifyListeners();
   }
-}
+
+
+} // CartProvider main class end here!

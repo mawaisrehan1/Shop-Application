@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_application/provider/auth_provider.dart';
 import 'package:shop_application/provider/cart_provider.dart';
 import 'package:shop_application/routes/routes.dart';
-import '../provider/product.dart';
+import '../provider/product_model_provider.dart';
 import '../values/colors.dart';
 
 class ProductItem extends StatelessWidget {
   const ProductItem({Key? key}) : super(key: key);
 
+
+  //
   // final String id;
   // final String title;
   // final String imageUrl;
@@ -15,20 +18,21 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context, listen: false);
+    final product = Provider.of<ProductModelProvider>(context, listen: false);
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
         footer: GridTileBar(
           backgroundColor: productTitleBackgroundColor,
-          leading: Consumer<Product>(
+          leading: Consumer<ProductModelProvider>(
             builder: (_, product, child) => IconButton(
               color: Theme.of(context).accentColor,
               icon: Icon(
                   product.isFavorite ? Icons.favorite : Icons.favorite_border),
               onPressed: () {
-                product.toggleFavoriteStatus();
+                product.toggleFavoriteStatus(authProvider.token as String, authProvider.userId as String);
               },
             ),
           ),
