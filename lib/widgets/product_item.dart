@@ -32,7 +32,7 @@ class ProductItem extends StatelessWidget {
               icon: Icon(
                   product.isFavorite ? Icons.favorite : Icons.favorite_border),
               onPressed: () {
-                product.toggleFavoriteStatus(authProvider.token as String, authProvider.userId as String);
+                product.toggleFavoriteStatus(authProvider.token!, authProvider.userId!);
               },
             ),
           ),
@@ -66,9 +66,13 @@ class ProductItem extends StatelessWidget {
             Navigator.of(context)
                 .pushNamed(Routes.productDetailScreen, arguments: product.id);
           },
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
+          child: Hero(
+            tag: product.id,
+            child: FadeInImage(
+              placeholder: const AssetImage('assets/images/product_placeholder.png'),
+              image: NetworkImage(product.imageUrl),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),

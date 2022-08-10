@@ -17,40 +17,46 @@ class ProductDetailScreen extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final mediaQuery = MediaQuery.of(context);
-    final appBar = AppBar(
-      title: Text(loadedProduct.title),
-    );
+    // final appBar = AppBar(
+    //   title: Text(loadedProduct.title),
+    // );
     return Scaffold(
-        appBar: appBar,
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
-                    0.5,
-                width: width * 1,
+      // appBar: appBar,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(loadedProduct.title, style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold
+              ),),
+              background: Hero(
+                tag: loadedProduct.id,
                 child: Image.network(
                   loadedProduct.imageUrl,
                   fit: BoxFit.fill,
                 ),
               ),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
               SizedBox(
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
-                    0.02,
+                height:
+                    (mediaQuery.size.height - mediaQuery.padding.top) * 0.02,
               ),
-              Text(
-                '\$${loadedProduct.price}',
-                style: const TextStyle(color: greyColor, fontSize: 20),
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  '\$${loadedProduct.price}',
+                  style: const TextStyle(color: greyColor, fontSize: 20),
+                ),
               ),
               SizedBox(
-                height: (mediaQuery.size.height -
-                    appBar.preferredSize.height -
-                    mediaQuery.padding.top) *
-                    0.02,
+                height:
+                    (mediaQuery.size.height - mediaQuery.padding.top) * 0.02,
               ),
               Container(
                 width: width * 1,
@@ -59,11 +65,14 @@ class ProductDetailScreen extends StatelessWidget {
                   loadedProduct.description,
                   softWrap: true,
                   textAlign: TextAlign.center,
-                //  style: const TextStyle(color: greyColor, fontSize: 20),
+                  //  style: const TextStyle(color: greyColor, fontSize: 20),
                 ),
               ),
-            ],
+              Container(height: 800,),
+            ]),
           ),
-        ));
+        ],
+      ),
+    );
   }
 }

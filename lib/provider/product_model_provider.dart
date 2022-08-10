@@ -31,10 +31,10 @@ class ProductModelProvider with ChangeNotifier{
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
-    final firebaseUrl =
+    final favFirebaseUrl =
         'https://shop-application-8a627-default-rtdb.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
     try{
-     final response = await http.put(Uri.parse(firebaseUrl),
+     final response = await http.put(Uri.parse(favFirebaseUrl),
        body: json.encode(
         isFavorite,
        ),

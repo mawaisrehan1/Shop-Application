@@ -3,6 +3,7 @@ import 'package:shop_application/screens/cart_screen.dart';
 import 'package:shop_application/screens/edit_product_screen.dart';
 import 'package:shop_application/screens/orders_screen.dart';
 import 'package:shop_application/screens/product_detail_screen.dart';
+import 'package:shop_application/screens/splash_screen.dart';
 import 'package:shop_application/screens/user_products_screen.dart';
 
 import '../screens/products_overview_screen.dart';
@@ -10,6 +11,7 @@ import '../screens/products_overview_screen.dart';
 //BuildContext? context;
 
 class Routes {
+  static String splashScreen = '/splashScreen';
   static String authScreen = '/authScreen';
   static String productOverviewScreen = '/productOverviewScreen';
   static String productDetailScreen = "/productDetailScreen";
@@ -20,6 +22,7 @@ class Routes {
 
   static getRoutes() {
     return {
+      splashScreen: (context) => const SplashScreen(),
       authScreen: (context) => const AuthScreen(),
       productOverviewScreen: (context) => const ProductOverviewScreen(),
       productDetailScreen: (context) => const ProductDetailScreen(),

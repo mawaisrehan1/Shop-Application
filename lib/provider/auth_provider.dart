@@ -1,19 +1,23 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shop_application/utils/utils.dart';
 
 class AuthProvider with ChangeNotifier {
   String? _token;
   DateTime? _expiryDate;
   String? _userId;
+  Timer? _authTimer;
 
+  ///isAuth getter!
   bool get isAuth {
-    return token != null;
+    return token != null && token != '';
   }
 
+  ///token getter!
   String? get token {
     if (_expiryDate != null &&
         _expiryDate!.isAfter(DateTime.now()) &&
@@ -23,7 +27,8 @@ class AuthProvider with ChangeNotifier {
     return null;
   }
 
-  String? get userId{
+  ///userId getter!
+  String? get userId {
     return _userId;
   }
 
@@ -57,26 +62,32 @@ class AuthProvider with ChangeNotifier {
           ),
         ),
       );
-      return token;
+
+      //_autoLogout();
       notifyListeners();
+      final prefs = await SharedPreferences.getInstance();
+      final userData = json.encode({
+        'token': _token,
+        'userId': _userId,
+        'expiryDate': _expiryDate?.toIso8601String()
+      });
+      prefs.setString('userData', userData);
+
+      LoginUtils.printValue("USER DATA", userData);
+
+      return token;
     } // try end here!
 
     catch (error) {
-      throw error;
-      return null;
+      rethrow;
     } // catch end here!
   } // signUp method end here!
-
-
-
 
   /// signUp method using firebase auth!
   Future<String?> signUp(String email, String password) async {
     LoginUtils.printValue('signUp Method', '');
     return _authenticate(email, password, 'signUp');
   } // signUp method end here!
-
-
 
   /// logIn method using firebase auth!
   Future<String?> logIn(String email, String password) async {
@@ -86,4 +97,61 @@ class AuthProvider with ChangeNotifier {
 
 
 
+   Future<bool> tryAutoLogin()async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      if (!prefs.containsKey('userData')) {
+        LoginUtils.printValue("USER DATA Not EXISTS",prefs.containsKey('userData'));
+        return false;
+      }
+
+      final extractedUserData = json.decode(
+          prefs.getString('userData')!);
+      LoginUtils.printValue('User Data Exist!', prefs.getString('userData'));
+      final expiryDate = DateTime.parse(
+          extractedUserData['expiryDate']);
+
+      /*if(expiryDate.isBefore(DateTime.now())) {
+      return false;
+    }*/
+      _token = extractedUserData['token'];
+      _userId = extractedUserData['userId'];
+      _expiryDate = expiryDate;
+
+      //notifyListeners();
+      //_autoLogout();
+
+      LoginUtils.printValue("TRY OUT AUTH", extractedUserData);
+
+      return true;
+    }catch(e){
+      LoginUtils.printValue("EXCEPTION TRY OUY AUTH", e);
+      return false;
+    }
+  }
+
+
+
+
+  ///Logout Method!
+  Future<void> logout() async {
+    _token = "";
+    _userId = "";
+    _expiryDate = null;
+    if (_authTimer != null) {
+      _authTimer?.cancel();
+      _authTimer = null;
+    }
+    final pref = await SharedPreferences.getInstance();
+    pref.clear();
+  } //logout method end here!
+
+  // void _autoLogout() {
+  //   if (_authTimer != null) {
+  //     _authTimer!.cancel();
+  //   }
+  //   final timeToExpiry = _expiryDate!.difference(DateTime.now()).inSeconds;
+  //   _authTimer = Timer(const Duration(seconds: 3), logout);
+  // }
 }

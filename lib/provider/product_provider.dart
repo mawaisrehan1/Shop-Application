@@ -43,8 +43,8 @@ class ProductsProvider with ChangeNotifier {
   ];
 
 
-   final String authToken;
-   final String userId;
+   String authToken;
+   String userId;
    ProductsProvider( this.authToken, this.userId, this._items);
 
 
@@ -71,24 +71,24 @@ class ProductsProvider with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
-
-
   /// get method for fetchAndSetProducts!
-  Future<void> fetchAndSetProducts() async {
-    var firebaseUrl =
-        'https://shop-application-8a627-default-rtdb.firebaseio.com/products.json?auth=$authToken';
+  Future<List<ProductModelProvider>> fetchAndSetProducts([bool filterByUser = false]) async {
+    final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+    final firebaseUrl =
+        'https://shop-application-8a627-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filterString';
     try {
       final response = await http.get(Uri.parse(firebaseUrl));
       LoginUtils.printValue('fetchAndSetProducts Methods Response', json.decode(response.body));
-      final List<ProductModelProvider> loadedProducts = [];
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
-      if(extractedData == null) {
-        return;
-      }
-       firebaseUrl =
+      // if(extractedData == null) {
+      //   return;
+      // }
+      final favFirebaseUrl =
           'https://shop-application-8a627-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
-      final favoriteResponse = await http.get(Uri.parse(firebaseUrl));
+      final favoriteResponse = await http.get(Uri.parse(favFirebaseUrl));
+      LoginUtils.printValue('fetchAndSetProducts Methods Response with User Id and Auth Token', json.decode(response.body));
       final favoriteData = json.decode(favoriteResponse.body);
+      final List<ProductModelProvider> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(ProductModelProvider(
             id: prodId,
@@ -101,10 +101,12 @@ class ProductsProvider with ChangeNotifier {
       });
       _items = loadedProducts;
       notifyListeners();
+      return _items;
     } // try end here!
 
     catch (error) {
-      rethrow;
+      print('fetch product catch error');
+      throw error;
     } // catch end here!
 
   } // method for get data end here!
@@ -116,7 +118,7 @@ class ProductsProvider with ChangeNotifier {
   /// method for add new product!
   Future<void> addProducts(ProductModelProvider product) async {
     final firebaseUrl =
-        'https://shop-application-8a627-default-rtdb.firebaseio.com/products.json?auth=$authToken&orderBy="creatorId"&equalTo="$userId"';
+        'https://shop-application-8a627-default-rtdb.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.post(
         Uri.parse(firebaseUrl),
